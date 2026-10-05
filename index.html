@@ -1,0 +1,2430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contract Award Register | Procurement Master Plan</title>
+<style>
+:root{
+    --navy:#002060;
+    --blue:#0070C0;
+    --light-blue:#EAF3FB;
+    --border:#D9E1F2;
+    --text:#1F2937;
+    --muted:#667085;
+    --green:#00B050;
+    --yellow:#FFC000;
+    --red:#C00000;
+    --bg:#F5F7FA;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);}
+
+.topbar{height:72px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.mark{width:42px;height:42px;border:1px solid #ffffff66;border-radius:7px;display:grid;place-items:center;font-weight:800;font-size:12px;}
+.title{font-weight:700;font-size:18px;}
+.sub{font-size:12px;opacity:.78;}
+.actions{display:flex;gap:8px;margin-left:auto;}
+.topbtn{background:transparent;color:#fff;border:1px solid #ffffff66;border-radius:5px;padding:8px 12px;cursor:pointer;font-weight:600;}
+.topbtn:hover{background:#ffffff15;}
+
+.container{width:96%;max-width:1600px;margin:auto;}
+.crumb{margin:16px 0 10px;color:var(--muted);font-size:14px;}
+.crumb b{color:var(--navy);}
+
+.hero{background:#fff;border:1px solid var(--border);border-left:5px solid var(--navy);border-radius:7px;padding:21px 24px;margin-bottom:14px;}
+.hero h1{margin:0 0 6px;color:var(--navy);font-size:27px;}
+.hero p{margin:0;color:var(--muted);line-height:1.5;}
+
+.steps{display:flex;align-items:center;gap:0;margin-bottom:14px;}
+.step{flex:1;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);padding:11px 14px;font-size:12px;font-weight:700;color:var(--muted);}
+.step:first-child{border-radius:6px 0 0 6px;}
+.step:last-child{border-radius:0 6px 6px 0;}
+.step.active{background:var(--light-blue);color:var(--navy);border-color:#B7D1EB;}
+.step-number{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#E5E7EB;color:#667085;font-size:12px;flex:none;}
+.step.active .step-number{background:var(--navy);color:#fff;}
+
+.project{background:#fff;border:1px solid var(--border);border-radius:7px;padding:15px 18px;margin-bottom:14px;}
+.project-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.project-header h3{margin:0;color:var(--navy);font-size:16px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:13px;font-weight:700;color:#344054;}
+input,select,textarea{width:100%;padding:10px;border:1px solid #CBD5E1;border-radius:5px;font:inherit;background:#fff;color:var(--text);}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 2px #0070c014;}
+.project-info{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.project-tag{background:#EAF3FB;color:var(--navy);border:1px solid #C8DBEF;padding:5px 10px;border-radius:4px;font-size:12px;font-weight:700;}
+
+/* TABS NAVIGATION */
+.tabs-nav{display:flex;gap:8px;margin-bottom:14px;border-bottom:2px solid var(--border);padding-bottom:10px;}
+
+/* CUSTOM SEARCHABLE DROPDOWN COMPONENT */
+.custom-select-wrapper{position:relative;user-select:none;}
+.custom-select-input-wrap{position:relative;display:flex;align-items:center;}
+.custom-select-input-wrap input{padding-right:32px;cursor:pointer;}
+.custom-select-input-wrap::after{
+    content:"▾";
+    position:absolute;
+    right:12px;
+    font-size:12px;
+    color:var(--muted);
+    pointer-events:none;
+}
+.custom-select-options{
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0;
+    right:0;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:6px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    max-height:220px;
+    overflow-y:auto;
+    z-index:99;
+    display:none;
+}
+.custom-select-options.open{display:block;}
+.custom-option{
+    padding:9px 12px;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:background 0.15s;
+}
+.custom-option:hover, .custom-option.selected{background:var(--light-blue);color:var(--navy);}
+.custom-option .opt-sub{font-size:11px;color:var(--muted);font-weight:600;}
+.custom-option-empty{padding:12px;font-size:13px;color:var(--muted);text-align:center;}
+
+/* MULTI-SELECT DROPDOWN STYLES */
+.multi-select-wrapper { position: relative; user-select: none; }
+.multi-select-toggle {
+    border: 1px solid #CBD5E1; border-radius: 5px; background: #fff; padding: 6px 8px;
+    font-size: 11px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 32px;
+    color: var(--text);
+}
+.multi-select-toggle::after { content: "▾"; font-size: 11px; color: var(--muted); margin-left: 4px; }
+.multi-select-dropdown {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff;
+    border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-height: 200px; overflow-y: auto; z-index: 99; display: none; padding: 6px;
+}
+.multi-select-dropdown.open { display: block; }
+.multi-select-option {
+    padding: 5px 6px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 4px; width: 100%;
+    color: var(--text);
+}
+.multi-select-option input[type="checkbox"] { margin: 0; width: 14px; height: 14px; flex-shrink: 0; }
+.multi-select-option:hover { background: var(--light-blue); }
+.multi-select-option.disabled-option { opacity: 0.4; pointer-events: none; background: #F8FAFC; }
+
+/* STEP 2 ROW LOCKING */
+tr.disabled-row td:not(:first-child):not(:last-child) {
+    opacity: 0.42;
+    pointer-events: none !important;
+    background-color: #FAFAFA;
+}
+/* A disabled Step 2 row keeps only the Select checkbox usable.
+   The Action column is also locked until the row is selected.
+   Saved rows are the exception because their Edit action must remain usable. */
+tr.disabled-row td {
+    opacity: 0.42;
+    pointer-events: none !important;
+    background-color: #FAFAFA;
+}
+tr.disabled-row td:first-child {
+    background-color: #fff;
+    opacity: 1;
+    pointer-events: auto !important;
+}
+tr.disabled-row.saved-row td:last-child {
+    background-color: #fff;
+    opacity: 1;
+    pointer-events: auto !important;
+}
+tr.disabled-row .multi-select-toggle {
+    background-color: #F1F5F9;
+    color: #64748B;
+    pointer-events: none !important;
+}
+tr.fully-consumed-row td {
+    opacity: 0.42;
+    pointer-events: none !important;
+    background-color: #FAFAFA;
+}
+tr.active-row td {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;}
+.stats{display:flex;gap:10px;flex-wrap:wrap;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:13px;}
+.stat strong{color:var(--navy);font-size:16px;}
+.btn{border:0;border-radius:5px;padding:10px 16px;font-weight:600;cursor:pointer;}
+.primary{background:var(--navy);color:#fff;}
+.primary:hover{background:#00184A;}
+.secondary{background:#fff;color:var(--navy);border:1px solid var(--border);}
+.secondary:hover{background:#F2F6FB;}
+
+.total-package{background:#fff;border:1px solid var(--border);border-left:5px solid var(--blue);border-radius:7px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;}
+.total-package strong{color:var(--navy);font-size:22px;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:20px;}
+
+/* REGISTER TABLE STYLING TO FIT SCREEN AND FIX ALIGNMENT LEVELS */
+.register-table {
+    width: 100%;
+    min-width: 0 !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.register-table th, .register-table td {
+    border-bottom: 1px solid #E8EDF5;
+    padding: 10px 8px;
+    vertical-align: middle !important;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 11px;
+    word-break: break-word;
+}
+.register-table th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 11px;
+}
+.register-table tr:hover td{background:#F8FBFF;}
+.register-table .cp{
+    font-weight:800;
+    color:var(--navy);
+    white-space:normal;
+    word-break:break-all;
+}
+.register-table .cp-desc{font-weight:700;}
+.register-table .cp-type{font-size:10px;color:#667085;margin-top:2px;}
+.register-table .list{display:flex;flex-direction:column;gap:3px;}
+.register-table .sub-item{display:flex;align-items:flex-start;gap:4px;}
+.register-table .sub-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex:none;margin-top:4px;}
+.register-table .code{font:10px Consolas,monospace;color:var(--blue);}
+.register-table .parent-cp-info{font-size:9px;color:var(--muted);margin-top:1px;}
+.register-table .empty{text-align:center;color:#667085;padding:35px;font-size:12px;}
+.register-table .edit-btn{border:1px solid var(--border);background:#fff;border-radius:4px;padding:4px 6px;cursor:pointer;font-weight:600;color:var(--navy);font-size:10px;}
+.register-table .edit-btn:hover{background:#F2F6FB;}
+
+/* HISTORY TABLE MATCHING REGISTER STYLING EXACTLY */
+.history-table {
+    width: 100%;
+    min-width: 0 !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.history-table th, .history-table td {
+    border-bottom: 1px solid #E8EDF5;
+    padding: 10px 8px;
+    vertical-align: middle !important;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 11px;
+    word-break: break-word;
+}
+.history-table th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 11px;
+}
+.history-table tr:hover td{background:#F8FBFF;}
+.history-table .empty{text-align:center;color:#667085;padding:35px;font-size:12px;}
+.history-table .code{font:10px Consolas,monospace;color:var(--blue);}
+
+/* STEP 2 SELECTION CARD & ALIGNMENT FIX */
+.step2-card {
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:18px;
+    margin-bottom:20px;
+}
+.step2-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+.step2-header h3 {
+    margin:0;
+    color:var(--navy);
+    font-size:16px;
+}
+.step2-table {
+    width: 100%;
+    min-width: 0 !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.step2-table th, .step2-table td {
+    padding: 10px 8px;
+    font-size: 11px;
+    vertical-align: middle !important;
+    word-break: break-word;
+    border-bottom: 1px solid #E8EDF5;
+}
+.step2-table th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    vertical-align: middle;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.step2-table input[type="text"],
+.step2-table input[type="date"],
+.step2-table select {
+    padding: 6px;
+    font-size: 11px;
+    width: 100%;
+    color: var(--text);
+    background: #fff;
+    border: 1px solid #CBD5E1;
+    border-radius: 5px;
+    font-family: inherit;
+}
+.step2-table input[type="date"]:disabled,
+.step2-table input[type="text"]:disabled,
+.step2-table select:disabled {
+    background-color: #FAFAFA;
+    color: #64748B;
+    cursor: default;
+}
+.step2-table .edit-btn,
+.step2-table .save-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+}
+.step2-table .cp-type {
+    font-size: 10px;
+}
+
+/* LONG CONTRACT AWARD DESCRIPTION MODAL */
+.description-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+}
+.description-modal.show { display: flex; }
+.description-window {
+    width: 100%;
+    max-width: 680px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: 5px solid var(--navy);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.22);
+    padding: 22px;
+}
+.description-window h3 {
+    margin: 0 0 7px;
+    color: var(--navy);
+    font-size: 18px;
+}
+.description-window p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+.description-counter {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 11px;
+}
+.description-modal textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.45;
+}
+.description-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+}
+.preview-modal {
+  position: fixed;
+  inset: 0;
+  background: #0008;
+  display: none;
+  z-index: 100;
+  overflow: auto;
+  padding: 20px 15px;
+}
+.preview-modal.show { display: block; }
+.preview-window {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 20px 70px #0005;
+  position: relative;
+  border-radius: 6px;
+  display: block;
+}
+.preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--navy);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.preview-page {
+  width: 100%;
+  min-height: 550px;
+  padding: 10mm 12mm 12mm;
+  background: #fff;
+  display: block;
+  box-sizing: border-box;
+}
+.pdf-title {
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 800;
+  border-bottom: 2px solid var(--navy);
+  padding-bottom: 4px;
+  line-height: 1.1;
+}
+.pdf-meta {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.3;
+}
+.preview-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 0 0;
+  font-size: 9px;
+  line-height: 1.2;
+}
+.preview-table th, .preview-table td {
+  border: 1px solid #999;
+  vertical-align: top !important; /* Changed from middle to top */
+  text-align: left !important;    /* Ensures text and buttons align to the left */
+  padding: 6px 7px;
+  font-size: 9px;
+}
+.preview-table th {
+  background: var(--navy);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+.preview-table .list{display:flex;flex-direction:column;gap:2px;}
+.preview-table .sub-item{display:flex;align-items:flex-start;gap:3px;}
+.preview-table .sub-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);flex:none;margin-top:3px;}
+.preview-table .code{font:8px Consolas,monospace;color:var(--blue);}
+.preview-table .parent-cp-info{font-size:8px;color:#555;}
+
+.preview-signatures {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 28px;
+}
+.signature { min-height: 35px; }
+.signature b { display: block; font-size: 9px; margin-bottom: 18px; }
+.signature span { display: block; border-top: 1px solid #555; padding-top: 3px; font-size: 8px; color: #555; }
+
+
+/* ============================================================
+   PMO / PROCORE-INSPIRED APPLICATION THEME
+   Visual layer only; workflow logic remains unchanged.
+   ============================================================ */
+:root{
+    --procore-orange:#ff5200;
+    --procore-orange-dark:#cc4200;
+    --navy:#0f2742;
+    --navy-2:#183b56;
+    --navy-3:#243b53;
+    --blue:#2563eb;
+    --light-blue:#fff7ed;
+    --border:#d9e2ec;
+    --soft-border:#edf2f7;
+    --text:#0f2742;
+    --muted:#64748b;
+    --green:#166534;
+    --yellow:#92400e;
+    --red:#991b1b;
+    --bg:#f8fafc;
+    --shadow:0 20px 45px rgba(15,39,66,.10);
+    --radius-lg:22px;
+    --radius-md:14px;
+    --radius-sm:10px;
+}
+html,body{min-height:100%;}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(255,82,0,.12), transparent 32%),
+        linear-gradient(135deg,#f8fafc 0%,#eef3f8 100%);
+    color:var(--navy);
+    padding:32px 18px 86px;
+}
+.container{width:100%;max-width:1560px;margin:0 auto;}
+.crumb{margin:16px 4px 18px;color:var(--muted);font-size:12px;font-weight:600;}
+.crumb b{color:var(--navy);}
+.hero{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:24px;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+    border:0;
+    border-left:0;
+    border-radius:var(--radius-lg);
+    padding:28px 30px;
+    margin-bottom:0;
+    background:linear-gradient(135deg,#102a43 0%,#183b56 56%,#243b53 100%);
+    color:#fff;
+    box-shadow:var(--shadow);
+}
+.hero::after{
+    content:"";
+    position:absolute;
+    width:260px;height:260px;
+    border-radius:50%;
+    right:-70px;top:-100px;
+    background:rgba(255,82,0,.22);
+}
+.hero-content,.hero-actions{position:relative;z-index:1;}
+.hero h1{margin:0;color:#fff;font-size:clamp(30px,4vw,46px);line-height:1.05;letter-spacing:-.035em;font-weight:800;}
+.hero p{max-width:830px;margin:14px 0 0;color:#d9e2ec;font-size:15px;line-height:1.6;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;}
+.procore-dot{width:9px;height:9px;border-radius:50%;background:var(--procore-orange);box-shadow:0 0 0 5px rgba(255,82,0,.18);display:inline-block;flex:none;}
+.hero-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;min-width:250px;}
+.status-pill{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border:1px solid transparent;white-space:nowrap;}
+.status-loading-pill{background:#fef3c7;color:#92400e;border-color:#fde68a;}
+.status-success-pill{background:#ecfdf5;color:#166534;border-color:#bbf7d0;}
+.status-error-pill{background:#fee2e2;color:#991b1b;border-color:#fecaca;}
+.topbtn{min-width:0;background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.24);border-radius:var(--radius-sm);padding:10px 14px;font-weight:800;box-shadow:none;}
+.topbtn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px);}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 18px;}
+.step{border:1px solid var(--border);border-radius:var(--radius-md)!important;padding:13px 16px;background:rgba(255,255,255,.78);color:var(--muted);box-shadow:0 8px 22px rgba(15,39,66,.05);}
+.step.active{background:#fff7ed;color:var(--navy);border-color:#fed7aa;}
+.step-number{width:30px;height:30px;background:#e2e8f0;color:var(--muted);font-weight:800;}
+.step.active .step-number{background:var(--procore-orange);color:#fff;}
+.project,.step2-card,.card{
+    background:#fff;
+    border:1px solid rgba(217,226,236,.84);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+}
+.project{padding:22px 24px;margin-bottom:20px;}
+.project-header,.step2-header{margin-bottom:16px;}
+.project-header h3,.step2-header h3{display:flex;align-items:center;gap:10px;margin:0;color:var(--navy);font-size:15px;text-transform:uppercase;letter-spacing:.04em;font-weight:800;}
+.project-header h3::before,.step2-header h3::before{content:"";width:6px;height:20px;border-radius:999px;background:var(--procore-orange);flex:none;}
+.grid{gap:20px;}
+.field{gap:8px;}
+.field label{color:#334155;font-size:12px;letter-spacing:.01em;}
+input,select,textarea{min-height:46px;padding:11px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;color:var(--navy);font-size:14px;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--procore-orange);box-shadow:0 0 0 4px rgba(255,82,0,.12);}
+.custom-select-options,.multi-select-dropdown{border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:0 16px 34px rgba(15,39,66,.15);}
+.custom-option{padding:10px 12px;}
+.custom-option:hover,.custom-option.selected,.multi-select-option:hover{background:#fff7ed;color:var(--navy);}
+.multi-select-toggle{min-height:38px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:8px 10px;}
+.project-tag{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:999px;padding:6px 10px;}
+.stats{gap:10px;}
+.stat{background:#f8fafc;border:1px solid var(--soft-border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--muted);font-size:12px;font-weight:700;}
+.stat strong{display:inline-block;margin-right:4px;color:var(--navy);font-size:19px;}
+.btn{min-width:132px;padding:11px 16px;border-radius:var(--radius-sm);font-weight:800;font-size:13px;transition:transform .18s ease,box-shadow .18s ease,background .18s ease;}
+.btn:hover:not(:disabled){transform:translateY(-1px);}
+.primary{background:var(--procore-orange);color:#fff;box-shadow:0 10px 18px rgba(255,82,0,.20);}
+.primary:hover{background:var(--procore-orange-dark);}
+.secondary{background:#e2e8f0;color:var(--navy);border:1px solid #cbd5e1;}
+.secondary:hover{background:#cbd5e1;}
+.step2-card{padding:22px 22px 20px;margin-bottom:22px;}
+.wrap{overflow:auto;border-radius:var(--radius-md);}
+.step2-table,.register-table,.history-table{background:#fff;}
+.step2-table th,.register-table th,.history-table th{background:var(--navy);color:#fff;font-weight:800;letter-spacing:.01em;border-bottom:0;}
+.step2-table td,.register-table td,.history-table td{border-bottom:1px solid var(--soft-border);background:#fff;}
+.step2-table tr:hover td,.register-table tr:hover td,.history-table tr:hover td{background:#f8fafc;}
+tr.active-row td{background:#fff7ed!important;box-shadow:inset 0 1px 0 #ffedd5,inset 0 -1px 0 #ffedd5;}
+tr.active-row td:first-child{box-shadow:inset 4px 0 0 var(--procore-orange),inset 0 1px 0 #ffedd5,inset 0 -1px 0 #ffedd5;}
+tr.disabled-row td,tr.fully-consumed-row td{background:#f8fafc;}
+.tabs-nav{display:inline-flex;gap:6px;padding:5px;margin:0 0 14px;border:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.78);box-shadow:0 8px 20px rgba(15,39,66,.05);}
+.tabs-nav .btn{min-width:0;box-shadow:none;padding:9px 14px;}
+.total-package{background:#fff;border:1px solid rgba(217,226,236,.84);border-left:0;border-radius:var(--radius-md);padding:15px 18px;margin-bottom:12px;box-shadow:0 10px 24px rgba(15,39,66,.06);color:var(--muted);}
+.total-package strong{color:var(--navy);font-size:26px;}
+.card{overflow:hidden;margin-bottom:22px;}
+.register-table .code,.history-table .code{color:#475569;}
+.register-table .cp{color:var(--navy);}
+.register-table .sub-dot,.preview-table .sub-dot{background:var(--procore-orange);}
+.register-table .edit-btn,.step2-table .edit-btn,.step2-table .save-btn{border:1px solid var(--border);background:#fff;border-radius:8px;color:var(--navy);font-weight:800;}
+.register-table .edit-btn:hover,.step2-table .edit-btn:hover{background:#fff7ed;border-color:#fed7aa;}
+.step2-table .save-btn{background:var(--procore-orange);color:#fff;border-color:var(--procore-orange);}
+.description-window{border-top:5px solid var(--procore-orange);border-radius:var(--radius-md);box-shadow:0 24px 70px rgba(15,39,66,.24);}
+.description-window h3{color:var(--navy);}
+.preview-toolbar{background:var(--navy);}
+.pdf-title{color:var(--navy);border-bottom-color:var(--procore-orange);}
+.footer{position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px 16px;background:rgba(15,39,66,.96);color:#fff;text-align:center;font-size:12px;line-height:1.45;box-shadow:0 -10px 30px rgba(15,39,66,.18);backdrop-filter:blur(10px);}
+.footer strong{color:#fff;}.footer span{color:#fdbb8b;font-weight:800;}
+@media (max-width:900px){
+    body{padding:18px 12px 105px;}
+    .hero{grid-template-columns:1fr;padding:22px;}
+    .hero-actions{justify-content:flex-start;min-width:0;}
+    .grid{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr;}
+    .tabs-nav{display:flex;width:100%;}
+    .tabs-nav .btn{flex:1;}
+}
+
+@page { size: A4 landscape; margin: 6mm; }
+@media print {
+  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  body > * { display: none !important; }
+  body > #pdfModal, body > .preview-modal { display: block !important; position: static !important; width: 100% !important; background: none !important; box-shadow: none !important; }
+  .preview-toolbar { display: none !important; }
+  .preview-window, .preview-page { max-width: 100% !important; width: 100% !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+    <section class="hero">
+        <div class="hero-content">
+            <div class="eyebrow"><span class="procore-dot"></span> Procurement Master Plan</div>
+            <h1>Contract Award Register</h1>
+            <p>Establish the Contract Packages applicable to the selected Project and assign approved Contract Sub-packages, Estimate Ranges, and Site Dates.</p>
+        </div>
+        <div class="hero-actions">
+            <div class="status-pill" id="smartsheetStatus"><span class="procore-dot"></span><span class="status-text">Connecting to Smartsheet</span></div>
+            <button class="topbtn" onclick="openPDFPreview()">View PDF</button>
+        </div>
+    </section>
+    <div class="crumb">Procore Learning Hub &nbsp;›&nbsp; Procurement &nbsp;›&nbsp; <b>Contract Award Register</b></div>
+
+    <div class="steps">
+        <div class="step active" id="step1"><span class="step-number">1</span> Select a Project Name & Type</div>
+        <div class="step active" id="step2"><span class="step-number">2</span> Manage Contract Package</div>
+    </div>
+
+    <section class="project">
+        <div class="project-header">
+            <h3>Step 1: Select Project & Project Type</h3>
+        </div>
+        <div class="grid">
+            <!-- LEFT COLUMN: PROJECT NAME & CONTRACT PACKAGE TYPE -->
+            <div class="field">
+                <label>Project Name <span style="color:var(--red);">*</span></label>
+                <div class="custom-select-wrapper" id="projectWrapper">
+                    <div class="custom-select-input-wrap">
+                        <input type="text" id="projectInput" placeholder="Search and Select Project Name" autocomplete="off" aria-required="true">
+                    </div>
+                    <div class="custom-select-options" id="projectOptions"></div>
+                </div>
+                <div class="stats" style="margin-top: 12px;">
+                    <div class="stat"><strong id="availableCpCount">0</strong> Contract Package(s)</div>
+                </div>
+
+                <!-- CONTRACT PACKAGE TYPE DROPDOWN FIELD MOVED TO THE LEFT SIDE -->
+                <div id="cpTypeFilterContainer" style="display:none; margin-top: 14px;">
+                    <label style="font-size:13px; font-weight:700; color:#344054; display:block; margin-bottom:6px;">Type of Contract Package <span style="color:var(--red);">*</span></label>
+                    <div class="custom-select-wrapper" id="cpTypeFilterWrapper">
+                        <div class="custom-select-input-wrap">
+                            <input type="text" id="cpTypeFilterInput" placeholder="Select Type of Contract Package" autocomplete="off" aria-required="true">
+                        </div>
+                        <div class="custom-select-options" id="cpTypeFilterOptions"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: PROJECT TYPE & MANAGE BUTTON -->
+            <div class="field">
+                <label>Project Type <span style="color:var(--red);">*</span></label>
+                <div class="custom-select-wrapper" id="typeWrapper">
+                    <div class="custom-select-input-wrap">
+                        <input type="text" id="typeInput" placeholder="Search and Select Project Type" autocomplete="off" aria-required="true">
+                    </div>
+                    <div class="custom-select-options" id="typeOptions"></div>
+                </div>
+                <div style="margin-top: 10px; display: flex; justify-content: flex-end;" id="manageContainer">
+                    <button class="btn primary" onclick="toggleManageContractPackage()" id="manageBtn" style="display:none;">Manage Contract Package</button>
+                </div>
+            </div>
+        </div>
+        <div class="project-info" id="projectInfo"></div>
+    </section>
+
+    <!-- STEP 2 DYNAMIC CONFIGURATION TABLE -->
+    <section class="step2-card" id="step2Container" style="display:none;">
+        <div class="step2-header">
+            <h3>Step 2: Configure Contract Packages & Sub-packages</h3>
+            <div class="stats">
+                <div class="stat"><strong id="availableCount">0</strong> Applicable Contract Package(s)</div>
+            </div>
+        </div>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Configure package details. New rows are locked until Select is checked. Save each configured row in the Action column. Partial selections automatically spawn remaining subpackages in a new row. Final Save / Transfer All moves configuration to the register below.</p>
+        
+        <div class="wrap">
+            <table class="step2-table">
+                <thead>
+                    <tr>
+                        <th style="width:4%;">Select</th>
+                        <th style="width:14%;">Main Contract Package Name & Type</th>
+                        <th style="width:14%;">Main Contract Sub-package(s)</th>
+                        <th style="width:14%;">Added Contract Package(s)</th>
+                        <th style="width:14%;">Sub-package(s) of the added Contract package(s)</th>
+                        <th style="width:11%;">Estimate Amount Range</th>
+                        <th style="width:10%;">Date Needed on Site</th>
+                        <th style="width:13%;">Remarks</th>
+                        <th style="width:6%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="step2TableBody">
+                    <tr><td colspan="9" class="empty">Please select a Project and Project Type first, then click Manage Contract Package.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top:15px; display:flex; justify-content:flex-end;">
+            <button class="btn primary" onclick="saveAllStep2Rows()">💾 Proceed to Contract Award Register</button>
+        </div>
+    </section>
+
+    <!-- TABS SWITCHER -->
+    <div class="tabs-nav" style="margin-top:20px;">
+        <button class="btn primary" id="tabRegisterBtn" onclick="switchTab('register')">Contract Award Register Summary</button>
+        <button class="btn secondary" id="tabHistoryBtn" onclick="switchTab('history')">Project History Log</button>
+    </div>
+
+    <!-- REGISTER VIEW CONTAINER -->
+    <div id="registerView">
+        <div class="total-package">
+            <span>Total Contract Award Created for Selected Project</span>
+            <strong id="totalPackageCount">0</strong>
+        </div>
+
+        <section class="card">
+            <div class="wrap">
+                <table class="register-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">Contract Award Code</th>
+                            <th style="width: 10%;">Contract Award Description</th>
+                            <th style="width: 9%;">Contract Package Type</th>
+                            <th style="width: 14%;">All Contract Package</th>
+                            <th style="width: 15%;">All Sub-packages</th>
+                            <th style="width: 11%;">Estimate Amount Range</th>
+                            <th style="width: 9%;">Date Needed on Site</th>
+                            <th style="width: 13%;">Remarks</th>
+                            <th style="width: 7%;" class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- HISTORY VIEW CONTAINER -->
+    <div id="historyView" style="display:none;">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <button class="btn secondary" style="color:var(--red); border-color:#fecaca;" onclick="clearHistoryLog()">🗑 Clear History Log</button>
+        </div>
+        <section class="card">
+            <div class="wrap">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Timestamp</th>
+                            <th style="width: 20%;">Action</th>
+                            <th style="width: 20%;">Control / CP Code</th>
+                            <th style="width: 35%;">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <strong>Powered by:</strong> <span>Program Management Office - Digital Transformation and Business Intelligence - Systems</span>
+</footer>
+
+<!-- LONG DESCRIPTION OVERRIDE MODAL -->
+<div class="description-modal" id="descriptionModal" role="dialog" aria-modal="true" aria-labelledby="descriptionModalTitle">
+    <div class="description-window">
+        <h3 id="descriptionModalTitle">Contract Award Description Exceeds 200 Characters</h3>
+        <p>The generated Contract Award Description is more than 200 characters. Please enter a shorter New Contract Award Description to continue saving this Step 2 row.</p>
+        <div id="generatedDescriptionPreview" style="background:#F8FAFC;border:1px solid var(--border);border-radius:5px;padding:9px 10px;margin-bottom:10px;font-size:11px;line-height:1.45;color:#475467;"></div>
+        <textarea id="newContractAwardDescription" maxlength="200" placeholder="Enter New Contract Award Description (maximum 200 characters)"></textarea>
+        <div class="description-counter"><span id="descriptionCharCount">0</span>/200 characters</div>
+        <div class="description-modal-actions">
+            <button class="btn secondary" type="button" onclick="cancelLongDescriptionSave()">Cancel</button>
+            <button class="btn primary" type="button" onclick="confirmLongDescriptionSave()">OK</button>
+        </div>
+    </div>
+</div>
+
+<div class="preview-modal" id="pdfModal">
+    <div class="preview-window" id="printArea">
+        <div class="preview-toolbar">
+            <button class="topbtn" onclick="window.print()">Print / Save PDF</button>
+            <button class="topbtn" onclick="closePDFPreview()">Close</button>
+        </div>
+
+        <div class="preview-page">
+            <div>
+                <div class="pdf-title">PROCUREMENT MASTER PLAN - CONTRACT AWARD REGISTER</div>
+                <div class="pdf-meta" id="pdfMeta"></div>
+
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">Contract Award Code</th>
+                            <th style="width: 10%;">Contract Award Description</th>
+                            <th style="width: 9%;">Contract Package Type</th>
+                            <th style="width: 14%;">All Contract Package</th>
+                            <th style="width: 15%;">All Sub-packages</th>
+                            <th style="width: 11%;">Estimate Amount Range</th>
+                            <th style="width: 9%;">Date Needed on Site</th>
+                            <th style="width: 13%;">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdfBody"></tbody>
+                </table>
+            </div>
+
+            <div class="preview-signatures">
+                <div class="signature">
+                    <b>PREPARED BY:</b>
+                    <span>Sign & Date</span>
+                </div>
+                <div class="signature">
+                    <b>REVIEWED BY:</b>
+                    <span>Sign & Date</span>
+                </div>
+                <div class="signature">
+                    <b>APPROVED BY:</b>
+                    <span>Sign & Date</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// SMARTSHEET DATA SOURCE CONFIGURATION
+// ============================================================
+const SMARTSHEET_CONFIG = {
+    proxyUrl: "/api/smartsheet",
+    sheets: {
+        projectTypes: "4544932179300228",
+        projects: "640707923496836",
+        contractPackages: "1777432421158788",
+        subPackages: "3541014712373124",
+        applicability: "4626949948526468",
+        packageHierarchy: "2112606300229508"
+    }
+};
+
+// These arrays are populated from Smartsheet during page initialization.
+let PROJECT_TYPE_MASTER = [];
+let PROJECT_MASTER = [];
+let CONTRACT_PACKAGE_MASTER = [];
+let PACKAGE_HIERARCHY_MASTER = [];
+
+function getSmartsheetField(row, ...names){
+    for(const name of names){
+        if(Object.prototype.hasOwnProperty.call(row, name)){
+            const value = row[name];
+            if(value !== null && value !== undefined) return String(value).trim();
+        }
+    }
+    return "";
+}
+
+function getSmartsheetNumber(row, ...names){
+    const value = getSmartsheetField(row, ...names);
+    if(value === "") return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+}
+
+async function fetchSmartsheetSheet(sheetId, label){
+    const url = `${SMARTSHEET_CONFIG.proxyUrl}?sheetId=${encodeURIComponent(sheetId)}`;
+    const response = await fetch(url, {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        cache: "no-store"
+    });
+
+    let payload = null;
+    try {
+        payload = await response.json();
+    } catch (err) {
+        throw new Error(`${label}: server returned a non-JSON response (${response.status}).`);
+    }
+
+    if(!response.ok || !payload || payload.ok !== true){
+        const detail = payload?.error || payload?.message || `HTTP ${response.status}`;
+        throw new Error(`${label}: ${detail}`);
+    }
+
+    if(!Array.isArray(payload.rows)){
+        throw new Error(`${label}: response does not contain a rows array.`);
+    }
+
+    return payload.rows;
+}
+
+function buildContractPackageMaster(cpRows, subRows, applicabilityRows){
+    const packageByRowNo = new Map();
+
+    cpRows.forEach((row, index) => {
+        const rowNo = getSmartsheetNumber(row, "CP Row No.", "CP Row No", "CP Row Number") ?? (index + 1);
+        const cp = {
+            sourceRowNo: rowNo,
+            type: getSmartsheetField(row, "Contract Package Type", "CP Type"),
+            code: getSmartsheetField(row, "CP Code", "Contract Package Code"),
+            name: getSmartsheetField(row, "CP Name", "Contract Package Name"),
+            applicability: [],
+            subpackages: []
+        };
+        packageByRowNo.set(String(rowNo), cp);
+    });
+
+    applicabilityRows.forEach(row => {
+        const rowNo = getSmartsheetNumber(row, "CP Row No.", "CP Row No", "CP Row Number");
+        if(rowNo === null) return;
+        const cp = packageByRowNo.get(String(rowNo));
+        if(!cp) return;
+        const projectTypeCode = getSmartsheetField(row, "Applicable Project Type Code", "Project Type Code", "Type Code");
+        if(projectTypeCode && !cp.applicability.includes(projectTypeCode)){
+            cp.applicability.push(projectTypeCode);
+        }
+    });
+
+    subRows.forEach((row, index) => {
+        const rowNo = getSmartsheetNumber(row, "CP Row No.", "CP Row No", "CP Row Number");
+        if(rowNo === null) return;
+        const cp = packageByRowNo.get(String(rowNo));
+        if(!cp) return;
+
+        const sequence = getSmartsheetNumber(row, "Subpackage Sequence", "Sub-package Sequence") ?? (index + 1);
+        cp.subpackages.push({
+            id: `CPROW-${rowNo}::SP${sequence}`,
+            code: getSmartsheetField(row, "Subpackage Code", "Sub-package Code"),
+            name: getSmartsheetField(row, "Subpackage Name", "Sub-package Name"),
+            sequence: sequence
+        });
+    });
+
+    return Array.from(packageByRowNo.values()).sort((a,b) => Number(a.sourceRowNo) - Number(b.sourceRowNo));
+}
+
+async function loadSmartsheetMasterData(){
+    const statusTarget = document.querySelector('.hero p');
+    const statusPill = document.getElementById('smartsheetStatus');
+    const statusText = statusPill ? statusPill.querySelector('.status-text') : null;
+    const originalStatus = statusTarget ? statusTarget.textContent : "";
+    if(statusTarget) statusTarget.textContent = "Loading Project and Contract Package master data from Smartsheet...";
+    if(statusText) statusText.textContent = "Loading Smartsheet Data";
+    if(statusPill) statusPill.className = "status-pill status-loading-pill";
+
+    try {
+        const [projectTypeRows, projectRows, cpRows, subRows, applicabilityRows, hierarchyRows] = await Promise.all([
+            fetchSmartsheetSheet(SMARTSHEET_CONFIG.sheets.projectTypes, "Project Type"),
+            fetchSmartsheetSheet(SMARTSHEET_CONFIG.sheets.projects, "Project"),
+            fetchSmartsheetSheet(SMARTSHEET_CONFIG.sheets.contractPackages, "Contract Packages"),
+            fetchSmartsheetSheet(SMARTSHEET_CONFIG.sheets.subPackages, "Sub Packages"),
+            fetchSmartsheetSheet(SMARTSHEET_CONFIG.sheets.applicability, "Applicability"),
+            fetchSmartsheetSheet(SMARTSHEET_CONFIG.sheets.packageHierarchy, "Package Hierarchy")
+        ]);
+
+        PROJECT_TYPE_MASTER = projectTypeRows
+            .map(row => ({
+                typeCode: getSmartsheetField(row, "Type Code", "Project Type Code"),
+                typeName: getSmartsheetField(row, "Type Name", "Project Type Name")
+            }))
+            .filter(x => x.typeCode && x.typeName);
+
+        PROJECT_MASTER = projectRows
+            .map(row => ({
+                projectCode: getSmartsheetField(row, "Project Code"),
+                projectName: getSmartsheetField(row, "Project Name")
+            }))
+            .filter(x => x.projectCode && x.projectName);
+
+        CONTRACT_PACKAGE_MASTER = buildContractPackageMaster(cpRows, subRows, applicabilityRows);
+        PACKAGE_HIERARCHY_MASTER = hierarchyRows;
+
+        initializeSubpackageIds();
+
+        if(!PROJECT_TYPE_MASTER.length) throw new Error("Project Type sheet returned no usable rows.");
+        if(!PROJECT_MASTER.length) throw new Error("Project sheet returned no usable rows.");
+        if(!CONTRACT_PACKAGE_MASTER.length) throw new Error("Contract Packages sheet returned no usable rows.");
+
+        if(statusTarget) statusTarget.textContent = originalStatus;
+        if(statusText) statusText.textContent = "Smartsheet Connected";
+        if(statusPill) statusPill.className = "status-pill status-success-pill";
+        console.info("Smartsheet master data loaded", {
+            projectTypes: PROJECT_TYPE_MASTER.length,
+            projects: PROJECT_MASTER.length,
+            contractPackages: CONTRACT_PACKAGE_MASTER.length,
+            subpackages: CONTRACT_PACKAGE_MASTER.reduce((n, cp) => n + (cp.subpackages || []).length, 0),
+            hierarchyRows: PACKAGE_HIERARCHY_MASTER.length
+        });
+    } catch(err) {
+        console.error("Unable to load Smartsheet master data.", err);
+        if(statusTarget) statusTarget.textContent = `Unable to load Smartsheet master data: ${err.message}`;
+        if(statusText) statusText.textContent = "Smartsheet Connection Error";
+        if(statusPill) statusPill.className = "status-pill status-error-pill";
+        throw err;
+    }
+}
+
+function initializeSubpackageIds(){
+    CONTRACT_PACKAGE_MASTER.forEach((cp, cpIndex) => {
+        (cp.subpackages || []).forEach((sub, subIndex) => {
+            if(!sub.id){
+                sub.id = `${cp.code || `CP${cpIndex}`}::SP${subIndex + 1}`;
+            }
+        });
+    });
+}
+
+function domToken(value){
+    return String(value ?? "").replace(/[^A-Za-z0-9_-]/g, "_");
+}
+
+const STORAGE_KEY = "procurement_master_plan_contract_award_register_v2";
+
+let cps = [];
+let step2Draft = [];
+let historyLogs = [];
+let selectedProjectValue = "";
+let selectedProjectTypeValue = "";
+let selectedCPTypeFilter = "";
+let currentTab = "register";
+
+function savePersistentState(){
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            version: 2,
+            cps: cps,
+            step2Draft: step2Draft,
+            historyLogs: historyLogs,
+            selectedProjectValue: selectedProjectValue,
+            selectedProjectTypeValue: selectedProjectTypeValue
+        }));
+    } catch(err) {
+        console.warn("Unable to save Procurement Master Plan data.", err);
+    }
+}
+
+function loadPersistentState(){
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const saved = JSON.parse(raw);
+        if(!saved || typeof saved !== "object") return;
+
+        cps = Array.isArray(saved.cps) ? saved.cps : [];
+        step2Draft = Array.isArray(saved.step2Draft) ? saved.step2Draft : [];
+        historyLogs = Array.isArray(saved.historyLogs) ? saved.historyLogs : [];
+        selectedProjectValue = "";
+        selectedProjectTypeValue = "";
+        selectedCPTypeFilter = "";
+    } catch(err) {
+        console.warn("Unable to load saved Procurement Master Plan data.", err);
+        cps = [];
+        step2Draft = [];
+        historyLogs = [];
+        selectedProjectValue = "";
+        selectedProjectTypeValue = "";
+    }
+}
+
+function hasPermanentProjectData(projectName){
+    if(!projectName) return false;
+    return cps.some(x => x.project === projectName) || historyLogs.some(x => x.project === projectName);
+}
+
+function getSavedProjectType(projectName){
+    if(!projectName) return "";
+    const record = cps.find(x => x.project === projectName && x.projectType);
+    if(record) return record.projectType;
+    const projectHistory = historyLogs.find(x => x.project === projectName);
+    if(projectHistory && projectHistory.projectType) return projectHistory.projectType;
+    return "";
+}
+
+const projectInfo = document.getElementById("projectInfo");
+const step2Container = document.getElementById("step2Container");
+const step2TableBody = document.getElementById("step2TableBody");
+const body = document.getElementById("body");
+
+function formatDateDDMMMYY(dateString) {
+    if (!dateString) return "—";
+    const parts = dateString.split("-");
+    if (parts.length !== 3) return dateString;
+    const year = parts[0].slice(-2);
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthIndex = parseInt(parts[1], 10) - 1;
+    if (monthIndex < 0 || monthIndex > 11) return dateString;
+    const month = monthNames[monthIndex];
+    const day = parts[2];
+    return `${day}-${month}-${year}`;
+}
+
+function logHistory(project, action, code, name) {
+    const projectType = selectedProjectTypeValue || getSavedProjectType(project) || "";
+    historyLogs.push({
+        project: project,
+        projectType: projectType,
+        action: action,
+        code: code,
+        name: name,
+        timestamp: new Date().toISOString()
+    });
+    savePersistentState();
+}
+
+function clearHistoryLog() {
+    if(confirm("This will permanently clear the Project History Log AND the Contract Award Register data for all projects saved in this browser. This action cannot be undone. Continue?")) {
+        cps = [];
+        step2Draft = [];
+        historyLogs = [];
+        selectedProjectValue = "";
+        selectedProjectTypeValue = "";
+        selectedCPTypeFilter = "";
+
+        localStorage.removeItem(STORAGE_KEY);
+
+        document.getElementById("projectInput").disabled = false;
+        document.getElementById("projectInput").value = "";
+        document.getElementById("typeInput").disabled = false;
+        document.getElementById("typeInput").value = "";
+        document.getElementById("cpTypeFilterInput").value = "";
+        projectInfo.innerHTML = "";
+        step2Container.style.display = "none";
+        document.getElementById("cpTypeFilterContainer").style.display = "none";
+
+        updateAvailableCounts();
+        renderHistory();
+        checkAndApplyProjectTypeLock();
+        render();
+        alert("All saved Project History Log and Contract Award Register data have been cleared. You can now start a new project.");
+    }
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    const regView = document.getElementById("registerView");
+    const histView = document.getElementById("historyView");
+    const tabRegBtn = document.getElementById("tabRegisterBtn");
+    const tabHistBtn = document.getElementById("tabHistoryBtn");
+
+    if (tab === "register") {
+        regView.style.display = "block";
+        histView.style.display = "none";
+        tabRegBtn.className = "btn primary";
+        tabHistBtn.className = "btn secondary";
+    } else {
+        regView.style.display = "none";
+        histView.style.display = "block";
+        tabRegBtn.className = "btn secondary";
+        tabHistBtn.className = "btn primary";
+        renderHistory();
+    }
+}
+
+function renderHistory() {
+    const histBody = document.getElementById("historyBody");
+    const filtered = historyLogs.filter(x => !selectedProjectValue || x.project === selectedProjectValue);
+    if (!filtered.length) {
+        histBody.innerHTML = `<tr><td colspan="4" class="empty">No history logs recorded yet.</td></tr>`;
+        return;
+    }
+    histBody.innerHTML = filtered.reverse().map(h => `
+        <tr>
+            <td>${esc(new Date(h.timestamp).toLocaleString())}</td>
+            <td><strong>${esc(h.action)}</strong></td>
+            <td><code>${esc(h.code)}</code></td>
+            <td>${esc(h.name)}</td>
+        </tr>
+    `).join("");
+}
+
+function esc(value){ return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function checkAndApplyProjectTypeLock() {
+    const projectInput = document.getElementById("projectInput");
+    const projectWrapper = document.getElementById("projectWrapper");
+    const typeInput = document.getElementById("typeInput");
+    const typeWrapper = document.getElementById("typeWrapper");
+
+    projectInput.disabled = false;
+    projectInput.style.opacity = "1";
+    if(projectWrapper) {
+        projectWrapper.style.opacity = "1";
+        projectWrapper.style.pointerEvents = "auto";
+    }
+
+    if (!selectedProjectValue) {
+        typeInput.disabled = false;
+        typeInput.style.opacity = "1";
+        typeWrapper.style.opacity = "1";
+        typeWrapper.style.pointerEvents = "auto";
+        return;
+    }
+
+    const savedType = getSavedProjectType(selectedProjectValue);
+    const shouldLockType = hasPermanentProjectData(selectedProjectValue) && !!savedType;
+
+    if (shouldLockType) {
+        if(selectedProjectTypeValue !== savedType) {
+            selectedProjectTypeValue = savedType;
+            const typeObj = PROJECT_TYPE_MASTER.find(t => t.typeCode === savedType);
+            typeInput.value = typeObj ? typeObj.typeName : savedType;
+        }
+        typeInput.disabled = true;
+        typeInput.style.opacity = "0.55";
+        typeWrapper.style.opacity = "0.55";
+        typeWrapper.style.pointerEvents = "none";
+    } else {
+        typeInput.disabled = false;
+        typeInput.style.opacity = "1";
+        typeWrapper.style.opacity = "1";
+        typeWrapper.style.pointerEvents = "auto";
+    }
+}
+
+function initSearchableDropdown(inputId, optionsId, data, getLabel, getSubLabel, onSelect) {
+    const input = document.getElementById(inputId);
+    const optionsContainer = document.getElementById(optionsId);
+
+    function renderOptions(query = "") {
+        const q = query.toLowerCase().trim();
+        const filtered = data.filter(item => getLabel(item).toLowerCase().includes(q) || (getSubLabel && getSubLabel(item).toLowerCase().includes(q)));
+        if(!filtered.length) {
+            optionsContainer.innerHTML = `<div class="custom-option-empty">No matching results</div>`;
+            return;
+        }
+        optionsContainer.innerHTML = filtered.map(item => `
+            <div class="custom-option" data-value="${esc(item.val || getLabel(item))}">
+                <span>${esc(getLabel(item))}</span>
+                ${getSubLabel ? `<span class="opt-sub">${esc(getSubLabel(item))}</span>` : ''}
+            </div>
+        `).join('');
+
+        optionsContainer.querySelectorAll('.custom-option').forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const val = opt.getAttribute('data-value');
+                const selectedItem = data.find(x => (x.val || getLabel(x)) === val);
+                input.value = getLabel(selectedItem);
+                optionsContainer.classList.remove('open');
+                onSelect(selectedItem);
+            });
+        });
+    }
+
+    input.addEventListener('focus', () => { 
+        if (input.disabled) return;
+        renderOptions(input.value); 
+        optionsContainer.classList.add('open'); 
+    });
+    input.addEventListener('input', () => { 
+        if (input.disabled) return;
+        if (inputId === 'projectInput' && input.value.trim() === '') {
+            selectedProjectValue = "";
+            selectedProjectTypeValue = "";
+            selectedCPTypeFilter = "";
+            document.getElementById("typeInput").value = "";
+            document.getElementById("cpTypeFilterInput").value = "";
+            projectNameChanged();
+            optionsContainer.classList.remove('open');
+            return;
+        }
+        if (inputId === 'cpTypeFilterInput' && input.value.trim() === '') {
+            selectedCPTypeFilter = "";
+            updateAvailableCounts();
+            if (step2Container.style.display === "block") {
+                renderStep2Table();
+            }
+            optionsContainer.classList.remove('open');
+            return;
+        }
+        renderOptions(input.value); 
+        optionsContainer.classList.add('open'); 
+    });
+    document.addEventListener('click', (e) => { if (!input.contains(e.target) && !optionsContainer.contains(e.target)) optionsContainer.classList.remove('open'); });
+}
+
+function setupDropdowns() {
+    initSearchableDropdown("projectInput", "projectOptions", PROJECT_MASTER, p => p.projectName, p => p.projectCode, p => { selectedProjectValue = p.projectName; projectNameChanged(); });
+    initSearchableDropdown("typeInput", "typeOptions", PROJECT_TYPE_MASTER.map(t => ({ val: t.typeCode, label: t.typeName, sub: t.typeCode })), t => t.label, t => t.sub, t => { selectedProjectTypeValue = t.val; projectTypeChanged(); });
+
+    selectedProjectValue = "";
+    selectedProjectTypeValue = "";
+    selectedCPTypeFilter = "";
+    document.getElementById("projectInput").disabled = false;
+    document.getElementById("projectInput").value = "";
+    document.getElementById("typeInput").disabled = false;
+    document.getElementById("typeInput").value = "";
+    document.getElementById("cpTypeFilterInput").value = "";
+    projectInfo.innerHTML = "";
+    step2Container.style.display = "none";
+    document.getElementById("cpTypeFilterContainer").style.display = "none";
+
+    updateAvailableCounts();
+    checkAndApplyProjectTypeLock();
+}
+
+function setupCPTypeFilterDropdown() {
+    if (!selectedProjectTypeValue) return;
+    const applicableCPs = CONTRACT_PACKAGE_MASTER.filter(cp => cp.applicability.includes(selectedProjectTypeValue));
+    const uniqueTypes = [...new Set(applicableCPs.map(cp => cp.type))].map(t => ({ val: t, label: t }));
+    
+    initSearchableDropdown("cpTypeFilterInput", "cpTypeFilterOptions", uniqueTypes, t => t.label, null, t => {
+        selectedCPTypeFilter = t.val;
+        updateAvailableCounts();
+        if (selectedCPTypeFilter) {
+            step2Container.style.display = "block";
+            renderStep2Table();
+        }
+    });
+}
+
+function updateAvailableCounts() {
+    if (!selectedProjectTypeValue) {
+        document.getElementById("availableCpCount").textContent = "0";
+        const availCountEl = document.getElementById("availableCount");
+        if(availCountEl) availCountEl.textContent = "0";
+        return;
+    }
+    let available = CONTRACT_PACKAGE_MASTER.filter(cp => cp.applicability.includes(selectedProjectTypeValue));
+    if (selectedCPTypeFilter) {
+        available = available.filter(cp => cp.type === selectedCPTypeFilter);
+    }
+    document.getElementById("availableCpCount").textContent = available.length;
+    
+    const availCountEl = document.getElementById("availableCount");
+    if(availCountEl) availCountEl.textContent = available.length;
+}
+
+function projectNameChanged(){
+    const selectedProj = PROJECT_MASTER.find(x => x.projectName === selectedProjectValue);
+    projectInfo.innerHTML = selectedProj ? `<span class="project-tag">${esc(selectedProj.projectCode)}</span>` : "";
+
+    if(selectedProjectValue){
+        const savedType = getSavedProjectType(selectedProjectValue);
+        if(savedType){
+            selectedProjectTypeValue = savedType;
+            const typeObj = PROJECT_TYPE_MASTER.find(t => t.typeCode === savedType);
+            document.getElementById("typeInput").value = typeObj ? typeObj.typeName : savedType;
+        }else{
+            selectedProjectTypeValue = "";
+            selectedCPTypeFilter = "";
+            document.getElementById("typeInput").value = "";
+            document.getElementById("cpTypeFilterInput").value = "";
+        }
+    }else{
+        selectedProjectTypeValue = "";
+        selectedCPTypeFilter = "";
+        document.getElementById("typeInput").value = "";
+        document.getElementById("cpTypeFilterInput").value = "";
+    }
+
+    checkAndApplyProjectTypeLock();
+
+    const manageBtn = document.getElementById("manageBtn");
+    const cpTypeContainer = document.getElementById("cpTypeFilterContainer");
+    if (selectedProjectValue && selectedProjectTypeValue) {
+        manageBtn.style.display = "inline-block";
+    } else {
+        manageBtn.style.display = "none";
+        cpTypeContainer.style.display = "none";
+    }
+
+    checkStep2Visibility();
+    updateAvailableCounts();
+    render();
+    savePersistentState();
+}
+
+function projectTypeChanged(){
+    selectedCPTypeFilter = "";
+    document.getElementById("cpTypeFilterInput").value = "";
+    setupCPTypeFilterDropdown();
+    updateAvailableCounts();
+    checkStep2Visibility();
+    const manageBtn = document.getElementById("manageBtn");
+    if (selectedProjectValue && selectedProjectTypeValue) {
+        manageBtn.style.display = "inline-block";
+    }
+    savePersistentState();
+}
+
+function checkStep2Visibility(){
+    if(!selectedProjectValue || !selectedProjectTypeValue){
+        step2Container.style.display = "none";
+        document.getElementById("cpTypeFilterContainer").style.display = "none";
+    }
+}
+
+function validateStep1Selections(){
+    const projectInput = document.getElementById("projectInput");
+    const typeInput = document.getElementById("typeInput");
+
+    const selectedProject = PROJECT_MASTER.find(p => p.projectName === selectedProjectValue);
+    const selectedType = PROJECT_TYPE_MASTER.find(t => t.typeCode === selectedProjectTypeValue);
+
+    if(!selectedProjectValue || !selectedProject || projectInput?.value.trim() !== selectedProject.projectName){
+        alert("Project Name is required. Please select a Project Name from the list.");
+        projectInput?.focus();
+        return false;
+    }
+
+    if(!selectedProjectTypeValue || !selectedType || typeInput?.value.trim() !== selectedType.typeName){
+        alert("Project Type is required. Please select a Project Type from the list.");
+        typeInput?.focus();
+        return false;
+    }
+
+    return true;
+}
+
+function toggleManageContractPackage(){
+    // Step 1 is mandatory before Contract Package management can begin.
+    if(!validateStep1Selections()) return;
+
+    const cpTypeContainer = document.getElementById("cpTypeFilterContainer");
+    const isVisible = step2Container.style.display === "block";
+
+    if(isVisible){
+        step2Container.style.display = "none";
+        cpTypeContainer.style.display = "none";
+        return;
+    }
+
+    // First click only opens the required Contract Package Type field.
+    // Step 2 is opened by the Contract Package Type selection itself.
+    cpTypeContainer.style.display = "block";
+    setupCPTypeFilterDropdown();
+
+    if(!selectedCPTypeFilter){
+        step2Container.style.display = "none";
+        setTimeout(() => {
+            const cpTypeInput = document.getElementById("cpTypeFilterInput");
+            if(cpTypeInput) cpTypeInput.focus();
+        }, 50);
+        alert("Type of Contract Package is required. Please select a Contract Package Type before proceeding to Step 2.");
+        return;
+    }
+
+    step2Container.style.display = "block";
+    renderStep2Table();
+}
+
+function getFullCPCode(recordOrCP, index = 0){
+    const projectName = recordOrCP.project || selectedProjectValue;
+    const p = PROJECT_MASTER.find(x => x.projectName === projectName);
+    const projCode = p ? p.projectCode : "PRJ";
+    
+    const hasAddedCPs = (recordOrCP.addedCPs && recordOrCP.addedCPs.length > 0);
+    const hasAddedSubs = (recordOrCP.addedSubpackages && recordOrCP.addedSubpackages.length > 0);
+    const packageTypeIndicator = (hasAddedCPs || hasAddedSubs) ? "MP" : "SP";
+    
+    const seriesNum = String(index + 1).padStart(3, '0');
+    
+    return `${projCode}-CA-${packageTypeIndicator}-${seriesNum}`;
+}
+
+function getContractAwardDescription(record) {
+    if (record.customDescription && String(record.customDescription).trim()) {
+        return String(record.customDescription).trim();
+    }
+    const baseName = record.cpName;
+    const addedCPCodes = record.addedCPs || [];
+    
+    if (addedCPCodes.length === 0) {
+        return baseName;
+    }
+    
+    const addedNames = addedCPCodes.map(code => {
+        const match = CONTRACT_PACKAGE_MASTER.find(c => c.code === code);
+        return match ? match.name : code;
+    });
+    
+    let addedStr = "";
+    if (addedNames.length === 1) {
+        addedStr = addedNames[0];
+    } else if (addedNames.length === 2) {
+        addedStr = addedNames.join(" and ");
+    } else {
+        addedStr = addedNames.slice(0, -1).join(", ") + " and " + addedNames[addedNames.length - 1];
+    }
+    
+    return `${baseName} with ${addedStr} added`;
+}
+
+function getConsumedSubpackagesAcrossProject(cpCode, excludeInstanceId = null) {
+    const consumed = [];
+    step2Draft
+        .filter(x => x.project === selectedProjectValue && x.cpCode === cpCode && x.instanceId !== excludeInstanceId)
+        .forEach(r => {
+            if(r.subpackages) consumed.push(...r.subpackages);
+        });
+    return [...new Set(consumed)];
+}
+
+function getConsumedAddedSubpackagesAcrossProject(instanceId) {
+    const consumed = [];
+    step2Draft
+        .filter(x => x.project === selectedProjectValue)
+        .forEach(r => {
+            if(r.instanceId !== instanceId && r.addedSubpackages){
+                consumed.push(...r.addedSubpackages);
+            }
+        });
+    return [...new Set(consumed)];
+}
+
+function getConsumedAllAddedSubpackagesForCP(cpCode, excludeInstanceId = null) {
+    const consumed = [];
+    step2Draft
+        .filter(r => r.project === selectedProjectValue && r.instanceId !== excludeInstanceId)
+        .forEach(r => {
+            if (r.addedCPs && r.addedCPs.includes(cpCode) && r.addedSubpackages) {
+                consumed.push(...r.addedSubpackages);
+            }
+        });
+    return [...new Set(consumed)];
+}
+
+function isCPFullyConsumed(cp, excludeInstanceId = null) {
+    if (!cp) return false;
+    if (!cp.subpackages || cp.subpackages.length === 0) {
+        const usedInDraft = step2Draft.some(r => r.project === selectedProjectValue && r.instanceId !== excludeInstanceId && (r.cpCode === cp.code || (r.addedCPs || []).includes(cp.code)));
+        const usedInRegister = cps.some(r => r.project === selectedProjectValue && (r.cpCode === cp.code || (r.addedCPs || []).includes(cp.code)));
+        return usedInDraft || usedInRegister;
+    }
+
+    const consumedMain = getConsumedSubpackagesAcrossProject(cp.code, excludeInstanceId);
+    const consumedAdded = getConsumedAllAddedSubpackagesForCP(cp.code, excludeInstanceId);
+
+    const regConsumedMain = [];
+    const regConsumedAdded = [];
+    cps.filter(r => r.project === selectedProjectValue).forEach(r => {
+        if (r.cpCode === cp.code && Array.isArray(r.subpackages)) regConsumedMain.push(...r.subpackages);
+        if (Array.isArray(r.addedCPs) && r.addedCPs.includes(cp.code) && Array.isArray(r.addedSubpackages)) regConsumedAdded.push(...r.addedSubpackages);
+    });
+
+    const consumed = new Set([...consumedMain, ...consumedAdded, ...regConsumedMain, ...regConsumedAdded]);
+    return cp.subpackages.every(sub => consumed.has(sub.id));
+}
+
+function renderStep2Table(){
+    let available = CONTRACT_PACKAGE_MASTER.filter(cp => cp.applicability.includes(selectedProjectTypeValue));
+    if (selectedCPTypeFilter) {
+        available = available.filter(cp => cp.type === selectedCPTypeFilter);
+    }
+    document.getElementById("availableCount").textContent = available.length;
+    const projectRecords = step2Draft.filter(x => x.project === selectedProjectValue);
+
+    if(!available.length){
+        step2TableBody.innerHTML = `<tr><td colspan="9" class="empty">No applicable contract packages for this project type or selected type filter.</td></tr>`;
+        return;
+    }
+
+    let rowsHtml = "";
+    available.forEach(cp => {
+        const savedRecordsForCP = projectRecords.filter(r => r.cpCode === cp.code);
+
+        savedRecordsForCP.forEach((savedRecord, idx) => {
+            const instanceId = savedRecord.instanceId || `${cp.code}_saved_${idx}`;
+            savedRecord.instanceId = instanceId;
+            rowsHtml += generateStep2RowHtml(cp, instanceId, savedRecord, true);
+        });
+
+        const allConsumedMain = getConsumedSubpackagesAcrossProject(cp.code);
+        const allConsumedAdded = getConsumedAllAddedSubpackagesForCP(cp.code);
+        const regConsumedMain = [];
+        const regConsumedAdded = [];
+        cps.filter(r => r.project === selectedProjectValue).forEach(r => {
+            if (r.cpCode === cp.code && Array.isArray(r.subpackages)) regConsumedMain.push(...r.subpackages);
+            if (Array.isArray(r.addedCPs) && r.addedCPs.includes(cp.code) && Array.isArray(r.addedSubpackages)) regConsumedAdded.push(...r.addedSubpackages);
+        });
+
+        const totalConsumedSubcodes = new Set([...allConsumedMain, ...allConsumedAdded, ...regConsumedMain, ...regConsumedAdded]);
+        const remainingSubs = cp.subpackages.filter(sub => !totalConsumedSubcodes.has(sub.id));
+        const fullyConsumed = isCPFullyConsumed(cp);
+
+        if(remainingSubs.length > 0 || cp.subpackages.length === 0){
+            if(fullyConsumed && savedRecordsForCP.length > 0) return;
+            const instanceId = `${cp.code}_active_${savedRecordsForCP.length}`;
+            const dummyRecord = { instanceId: instanceId, subpackages: [], addedCPs: [], addedSubpackages: [], estimate: "", dateNeeded: "", remarks: "" };
+            rowsHtml += generateStep2RowHtml(cp, instanceId, dummyRecord, false, fullyConsumed);
+        }
+    });
+
+    step2TableBody.innerHTML = rowsHtml;
+}
+
+function generateStep2RowHtml(cp, instanceId, record, isSaved, fullyConsumed = false) {
+    const savedSubs = record.subpackages || [];
+    const savedAddedCPs = record.addedCPs || [];
+    const savedAddedSubs = record.addedSubpackages || [];
+    const savedEstimate = record.estimate || "";
+    const savedDate = record.dateNeeded || "";
+    const savedRemarks = record.remarks || "";
+    const domInstanceId = domToken(instanceId);
+
+    const rowClass = isSaved ? "disabled-row saved-row" : "disabled-row";
+    const checkboxAttrs = isSaved ? "checked disabled" : (fullyConsumed ? "disabled" : "");
+
+    const consumedMainSubsForThisCP = getConsumedSubpackagesAcrossProject(cp.code, instanceId);
+    const consumedAddedSubsForThisCP = getConsumedAllAddedSubpackagesForCP(cp.code, instanceId);
+    const regConsumedMain = [];
+    const regConsumedAdded = [];
+    cps.filter(r => r.project === selectedProjectValue).forEach(r => {
+        if (r.cpCode === cp.code && Array.isArray(r.subpackages)) regConsumedMain.push(...r.subpackages);
+        if (Array.isArray(r.addedCPs) && r.addedCPs.includes(cp.code) && Array.isArray(r.addedSubpackages)) regConsumedAdded.push(...r.addedSubpackages);
+    });
+    const consumedSubsForThisCP = [...new Set([...consumedMainSubsForThisCP, ...consumedAddedSubsForThisCP, ...regConsumedMain, ...regConsumedAdded])];
+
+    const subpackagesList = cp.subpackages;
+    const subListHtml = subpackagesList.length > 0 ? `
+        <div class="multi-select-wrapper" data-code="${instanceId}" data-type="sub">
+            <div class="multi-select-toggle" id="toggle-${instanceId}-sub" onclick="toggleSubDropdown('${instanceId}', 'sub')">
+                ${savedSubs.length ? `${savedSubs.length} Sub-package(s) selected` : 'Select Sub-package(s)'}
+            </div>
+            <div class="multi-select-dropdown" id="dropdown-${instanceId}-sub">
+                <label class="multi-select-option" style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:4px;">
+                    <input type="checkbox" onchange="toggleAllSubs('${instanceId}', 'sub', this.checked)"> Select All
+                </label>
+                ${subpackagesList.map(sub => {
+                    const isAlreadyUsed = consumedSubsForThisCP.includes(sub.id) && !savedSubs.includes(sub.id);
+                    return `
+                        <label class="multi-select-option ${isAlreadyUsed ? 'disabled-option' : ''}">
+                            <input type="checkbox" class="sub-chk-${domInstanceId}-sub" data-instance="${esc(instanceId)}" value="${esc(sub.id)}" ${savedSubs.includes(sub.id) ? 'checked' : ''} ${isAlreadyUsed ? 'disabled' : ''} onchange="updateToggleLabel('${instanceId}', 'sub')">
+                            <span>${esc(sub.name)} (${esc(sub.code)})${isAlreadyUsed ? '[Added]' : ''}</span>
+                        </label>`;
+                }).join("")}
+            </div>
+        </div>` : `<span style="color:var(--muted); font-size:11px;">None</span>`;
+
+    let otherCPs = CONTRACT_PACKAGE_MASTER.filter(item => item.code !== cp.code && item.applicability.includes(selectedProjectTypeValue));
+    if (selectedCPTypeFilter) {
+        otherCPs = otherCPs.filter(item => item.type === selectedCPTypeFilter || savedAddedCPs.includes(item.code));
+    }
+
+    const addedCpHtml = `
+        <div class="multi-select-wrapper" data-code="${instanceId}" data-type="added">
+            <div class="multi-select-toggle" id="toggle-${instanceId}-added" onclick="toggleSubDropdown('${instanceId}', 'added')">
+                ${savedAddedCPs.length ? `${savedAddedCPs.length} CP(s) Added` : 'Select Added CP(s)'}
+            </div>
+            <div class="multi-select-dropdown" id="dropdown-${instanceId}-added">
+                <label class="multi-select-option" style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:4px;">
+                    <input type="checkbox" onchange="toggleAllAddedCPs('${instanceId}', this.checked)"> Select All
+                </label>
+                <div id="added-cp-options-${instanceId}">
+                    ${otherCPs.map(item => {
+                        const addedCPFullyConsumed = isCPFullyConsumed(item, instanceId);
+                        const isCurrentSavedAddedCP = savedAddedCPs.includes(item.code);
+                        const disableAddedCP = addedCPFullyConsumed && !isCurrentSavedAddedCP;
+                        return `
+                        <label class="multi-select-option ${disableAddedCP ? 'disabled-option' : ''}" data-code="${item.code}">
+                            <input type="checkbox" class="added-cp-chk-${domInstanceId}" data-instance="${esc(instanceId)}" value="${esc(item.code)}" ${isCurrentSavedAddedCP ? 'checked' : ''} ${disableAddedCP ? 'disabled' : ''} onchange="addedCPChanged('${instanceId}')">
+                            <span>${esc(item.name)} (${esc(item.code)})${disableAddedCP ? '[Used]' : ''}</span>
+                        </label>`;
+                    }).join("")}
+                </div>
+            </div>
+        </div>`;
+
+    let addedSubOptionsHtml = `<div style="padding:6px; color:var(--muted); font-size:11px;">Select added package first</div>`;
+    if(savedAddedCPs.length > 0) {
+        let hasSubs = false;
+        const consumedAddedSubs = getConsumedAddedSubpackagesAcrossProject(instanceId);
+        addedSubOptionsHtml = `<label class="multi-select-option" style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:4px;"><input type="checkbox" onchange="toggleAllAddedSubs('${instanceId}', this.checked)"> Select All</label>`;
+        savedAddedCPs.forEach(addedCode => {
+            const addedCpObj = CONTRACT_PACKAGE_MASTER.find(x => x.code === addedCode);
+            if(addedCpObj && addedCpObj.subpackages.length > 0){
+                hasSubs = true;
+                addedSubOptionsHtml += `<div style="font-weight:bold; font-size:10px; color:var(--navy); padding:3px 6px; background:#f0f4f8;">${esc(addedCpObj.name)}</div>`;
+                addedCpObj.subpackages.forEach(sub => {
+                    const isAddedSubUsed = consumedAddedSubs.includes(sub.id) && !savedAddedSubs.includes(sub.id);
+                    addedSubOptionsHtml += `
+                        <label class="multi-select-option ${isAddedSubUsed ? 'disabled-option' : ''}">
+                            <input type="checkbox" class="sub-chk-${domInstanceId}-addedsub" data-instance="${esc(instanceId)}" value="${esc(sub.id)}" ${savedAddedSubs.includes(sub.id) ? 'checked' : ''} ${isAddedSubUsed ? 'disabled' : ''} onchange="updateToggleLabel('${instanceId}', 'addedsub')">
+                            <span>${esc(sub.name)} (${esc(sub.code)}) ${isAddedSubUsed ? '[Added]' : ''}</span>
+                        </label>`;
+                });
+            }
+        });
+        if(!hasSubs){ addedSubOptionsHtml = `<div style="padding:6px; color:var(--muted); font-size:11px;">None</div>`; }
+    }
+
+    const addedSubHtml = `
+        <div class="multi-select-wrapper" data-code="${instanceId}" data-type="addedsub">
+            <div class="multi-select-toggle" id="toggle-${instanceId}-addedsub" onclick="toggleSubDropdown('${instanceId}', 'addedsub')">
+                ${savedAddedSubs.length ? `${savedAddedSubs.length} Sub-package(s) added` : 'Select Sub-package(s)'}
+            </div>
+            <div class="multi-select-dropdown" id="dropdown-${instanceId}-addedsub">${addedSubOptionsHtml}</div>
+        </div>`;
+
+    const actionCell = isSaved
+        ? `<button class="edit-btn" onclick="editStep2SavedRow('${instanceId}')">✏️ Edit</button>`
+        : fullyConsumed
+            ? `<span style="font-size:10px;color:var(--muted);">🔒 Used</span>`
+            : `<button class="save-btn" id="save-${instanceId}" onclick="saveStep2SingleRow('${instanceId}', '${cp.code}')" disabled>💾 Save</button>`;
+
+    return `
+        <tr id="row-${instanceId}" class="${rowClass} ${fullyConsumed ? 'fully-consumed-row' : ''}" data-cpcode="${cp.code}" data-saved="${isSaved ? '1' : '0'}">
+            <td style="text-align:center;">
+                <input type="checkbox" class="cp-select-chk" value="${instanceId}" ${checkboxAttrs} onchange="toggleRowActive('${instanceId}')" style="width:14px;height:14px;">
+            </td>
+            <td>
+                <div class="cp-desc">${esc(cp.name)}</div>
+                <div class="cp-type">${esc(cp.type)} — ${esc(cp.code)}</div>
+            </td>
+            <td>${subListHtml}</td>
+            <td>${addedCpHtml}</td>
+            <td>${addedSubHtml}</td>
+            <td>
+                <select id="est-${instanceId}" aria-required="true" ${isSaved ? 'disabled' : ''}>
+                    <option value="">Select Range</option>
+                    <option value="Piecemeal" ${savedEstimate === 'Piecemeal' ? 'selected' : ''}>Piecemeal</option>
+                    <option value="Less than 1M" ${savedEstimate === 'Less than 1M' ? 'selected' : ''}>Less than 1M</option>
+                    <option value="More than 1M but Less than 25M" ${savedEstimate === 'More than 1M but Less than 25M' ? 'selected' : ''}>More than 1M but Less than 25M</option>
+                    <option value="More than 25M" ${savedEstimate === 'More than 25M' ? 'selected' : ''}>More than 25M</option>
+                </select>
+            </td>
+            <td>
+                <input type="date" id="date-${instanceId}" value="${esc(savedDate)}" aria-required="true" ${isSaved ? 'disabled' : ''}>
+            </td>
+            <td><input type="text" id="rem-${instanceId}" value="${esc(savedRemarks)}" placeholder="Remarks (Required)" aria-required="true" ${isSaved ? 'disabled' : ''}></td>
+            <td style="text-align:center;" id="action-${instanceId}">${actionCell}</td>
+        </tr>
+    `;
+}
+
+function setStep2InputsEnabled(instanceId, enabled){
+    const row = document.getElementById(`row-${instanceId}`);
+    if(!row) return;
+    ["est","date","rem"].forEach(prefix => {
+        const el = document.getElementById(`${prefix}-${instanceId}`);
+        if(el) el.disabled = !enabled;
+    });
+    if(enabled){
+        row.classList.remove("disabled-row", "saved-row");
+        row.classList.add("active-row");
+        const saveBtn = document.getElementById(`save-${instanceId}`);
+        if(saveBtn) saveBtn.disabled = false;
+    }else{
+        row.classList.remove("active-row");
+        row.classList.add("disabled-row", "saved-row");
+        const saveBtn = document.getElementById(`save-${instanceId}`);
+        if(saveBtn) saveBtn.disabled = true;
+    }
+}
+
+function editStep2SavedRow(instanceId){
+    const row = document.getElementById(`row-${instanceId}`);
+    if(!row) return;
+    setStep2InputsEnabled(instanceId, true);
+    const actionCell = document.getElementById(`action-${instanceId}`);
+    if(actionCell){
+        const cpCode = row.getAttribute('data-cpcode');
+        actionCell.innerHTML = `<button class="save-btn" id="save-${instanceId}" onclick="saveStep2SingleRow('${instanceId}', '${cpCode}')">💾 Save</button>`;
+    }
+}
+
+function toggleRowActive(instanceId){
+    const row = document.getElementById(`row-${instanceId}`);
+    const chk = row ? row.querySelector(".cp-select-chk") : null;
+    if(!row || !chk || chk.disabled) return;
+    setStep2InputsEnabled(instanceId, chk.checked);
+}
+
+function readStep2Row(instanceId, cpCode){
+    const cp = CONTRACT_PACKAGE_MASTER.find(x => x.code === cpCode);
+    if(!cp) return null;
+    const subcodes = Array.from(document.querySelectorAll(`.sub-chk-${domToken(instanceId)}-sub:checked`)).map(c => c.value);
+    const addedCPs = Array.from(document.querySelectorAll(`.added-cp-chk-${domToken(instanceId)}:checked`)).map(c => c.value);
+    const addedSubcodes = Array.from(document.querySelectorAll(`.sub-chk-${domToken(instanceId)}-addedsub:checked`)).map(c => c.value);
+
+    return {
+        project: selectedProjectValue,
+        projectType: selectedProjectTypeValue,
+        cpCode: cp.code,
+        cpName: cp.name,
+        cpType: cp.type,
+        instanceId: instanceId,
+        subpackages: subcodes,
+        addedCPs: addedCPs,
+        addedSubpackages: addedSubcodes,
+        estimate: document.getElementById(`est-${instanceId}`)?.value || "",
+        dateNeeded: document.getElementById(`date-${instanceId}`)?.value || "",
+        remarks: document.getElementById(`rem-${instanceId}`)?.value.trim() || "",
+        customDescription: (step2Draft.find(x => x.instanceId === instanceId)?.customDescription || "")
+    };
+}
+
+function validateStep2RequiredFields(instanceId){
+    const estimateEl = document.getElementById(`est-${instanceId}`);
+    const dateEl = document.getElementById(`date-${instanceId}`);
+    const remarksEl = document.getElementById(`rem-${instanceId}`);
+
+    const estimate = estimateEl?.value.trim() || "";
+    const dateNeeded = dateEl?.value.trim() || "";
+    const remarks = remarksEl?.value.trim() || "";
+
+    if(!estimate){
+        alert("Estimate Amount Range is required before saving this row.");
+        estimateEl?.focus();
+        return false;
+    }
+
+    if(!dateNeeded){
+        alert("Date Needed on Site is required before saving this row.");
+        dateEl?.focus();
+        return false;
+    }
+
+    if(!remarks){
+        alert("Remarks is required before saving this row.");
+        remarksEl?.focus();
+        return false;
+    }
+
+    return true;
+}
+
+function saveStep2SingleRow(instanceId, cpCode){
+    const row = document.getElementById(`row-${instanceId}`);
+    const chk = row ? row.querySelector(".cp-select-chk") : null;
+    if(!row || !chk || (!chk.checked && !row.classList.contains('saved-row'))){
+        alert("Please check Select for this row first.");
+        return;
+    }
+
+    const record = readStep2Row(instanceId, cpCode);
+    if(!record) return;
+
+    // These fields are mandatory only while the row is selected/active.
+    if(!validateStep2RequiredFields(instanceId)) return;
+
+    const cp = CONTRACT_PACKAGE_MASTER.find(x => x.code === cpCode);
+    const hasMainSelection = record.subpackages.length > 0;
+    const hasAddedSelection = record.addedCPs.length > 0;
+    const hasAddedSubSelection = record.addedSubpackages.length > 0;
+
+    if(cp.subpackages.length > 0 && !hasMainSelection && !hasAddedSelection && !hasAddedSubSelection){
+        alert("Please select at least one Contract Sub-package or Added Contract Package before saving.");
+        return;
+    }
+
+    let addedCPsHaveSubpackages = false;
+    record.addedCPs.forEach(addedCode => {
+        const addedCpObj = CONTRACT_PACKAGE_MASTER.find(x => x.code === addedCode);
+        if(addedCpObj && addedCpObj.subpackages && addedCpObj.subpackages.length > 0) {
+            addedCPsHaveSubpackages = true;
+        }
+    });
+
+    if (addedCPsHaveSubpackages && record.addedSubpackages.length === 0) {
+        alert("Please select at least one sub-package for the selected Added Contract Package(s).");
+        return;
+    }
+
+    // Contract Award Description is generated from the main CP + Added CP names.
+    // If it exceeds 200 characters, require a manual replacement before saving.
+    const generatedDescription = getContractAwardDescription({...record, customDescription: ""});
+    if(generatedDescription.length > 200 && !record.customDescription){
+        openLongDescriptionModal(instanceId, cpCode, generatedDescription);
+        return;
+    }
+
+    finalizeStep2SingleRow(record);
+}
+
+function finalizeStep2SingleRow(record){
+    const existingIndex = step2Draft.findIndex(x => x.instanceId === record.instanceId);
+    if(existingIndex >= 0){
+        step2Draft[existingIndex] = record;
+    } else {
+        step2Draft.push(record);
+    }
+
+    renderStep2Table();
+    alert("This Step 2 row has been saved.");
+}
+
+let pendingLongDescriptionSave = null;
+
+function openLongDescriptionModal(instanceId, cpCode, generatedDescription){
+    pendingLongDescriptionSave = { instanceId, cpCode, generatedDescription };
+    const modal = document.getElementById("descriptionModal");
+    const textarea = document.getElementById("newContractAwardDescription");
+    const counter = document.getElementById("descriptionCharCount");
+    if(!modal || !textarea) return;
+
+    textarea.value = "";
+    counter.textContent = "0";
+    const preview = document.getElementById("generatedDescriptionPreview");
+    if(preview) preview.innerHTML = `<b>Current generated description (${generatedDescription.length} characters):</b><br>${esc(generatedDescription)}`;
+    modal.classList.add("show");
+    setTimeout(() => textarea.focus(), 50);
+}
+
+function confirmLongDescriptionSave(){
+    if(!pendingLongDescriptionSave) return;
+
+    const textarea = document.getElementById("newContractAwardDescription");
+    const newDescription = textarea ? textarea.value.trim() : "";
+
+    if(!newDescription){
+        alert("Please enter the New Contract Award Description.");
+        if(textarea) textarea.focus();
+        return;
+    }
+
+    if(newDescription.length > 200){
+        alert("The New Contract Award Description must not exceed 200 characters.");
+        if(textarea) textarea.focus();
+        return;
+    }
+
+    const { instanceId, cpCode } = pendingLongDescriptionSave;
+    const record = readStep2Row(instanceId, cpCode);
+    if(!record) return;
+
+    record.customDescription = newDescription;
+    pendingLongDescriptionSave = null;
+    document.getElementById("descriptionModal").classList.remove("show");
+    finalizeStep2SingleRow(record);
+}
+
+function cancelLongDescriptionSave(){
+    pendingLongDescriptionSave = null;
+    const modal = document.getElementById("descriptionModal");
+    if(modal) modal.classList.remove("show");
+}
+
+function updateLongDescriptionCounter(){
+    const textarea = document.getElementById("newContractAwardDescription");
+    const counter = document.getElementById("descriptionCharCount");
+    if(textarea && counter) counter.textContent = textarea.value.length;
+}
+
+function saveAllStep2Rows(){
+    const checkedBoxes = document.querySelectorAll('#step2TableBody .cp-select-chk:checked');
+    let newRecords = [];
+    let isValid = true;
+
+    if (checkedBoxes.length > 0) {
+        checkedBoxes.forEach(chk => {
+            const instanceId = chk.value;
+            const row = document.getElementById(`row-${instanceId}`);
+            if(!row) return;
+            const cpCode = row.getAttribute('data-cpcode');
+            const record = readStep2Row(instanceId, cpCode);
+            if(!record) return;
+
+            if(!validateStep2RequiredFields(instanceId)){
+                isValid = false;
+                return;
+            }
+
+            const cp = CONTRACT_PACKAGE_MASTER.find(x => x.code === cpCode);
+            const hasMainSelection = record.subpackages.length > 0;
+            const hasAddedSelection = record.addedCPs.length > 0;
+            const hasAddedSubSelection = record.addedSubpackages.length > 0;
+
+            if(cp && cp.subpackages.length > 0 && !hasMainSelection && !hasAddedSelection && !hasAddedSubSelection){
+                alert(`Please select at least one Contract Sub-package or Added Contract Package for row: ${cp.name}`);
+                isValid = false;
+                return;
+            }
+
+            let addedCPsHaveSubpackages = false;
+            record.addedCPs.forEach(addedCode => {
+                const addedCpObj = CONTRACT_PACKAGE_MASTER.find(x => x.code === addedCode);
+                if(addedCpObj && addedCpObj.subpackages && addedCpObj.subpackages.length > 0) {
+                    addedCPsHaveSubpackages = true;
+                }
+            });
+
+            if (addedCPsHaveSubpackages && record.addedSubpackages.length === 0) {
+                alert(`Please select at least one sub-package for the selected Added Contract Package(s) in row: ${cp.name}`);
+                isValid = false;
+                return;
+            }
+
+            newRecords.push(record);
+        });
+
+        if(!isValid) return;
+
+        if(newRecords.length > 0) {
+            step2Draft = step2Draft.filter(x => x.project !== selectedProjectValue);
+            step2Draft.push(...newRecords);
+        }
+    }
+
+    const projectDraft = step2Draft.filter(x => x.project === selectedProjectValue);
+    if(!projectDraft.length){
+        alert("There are no selected or saved Step 2 rows to transfer. Please check 'Select' on at least one row.");
+        return;
+    }
+
+    const otherFinalRecords = cps.filter(x => x.project !== selectedProjectValue);
+    cps = [...otherFinalRecords, ...projectDraft];
+
+    projectDraft.forEach(d => {
+        logHistory(selectedProjectValue, "Added/Transferred", d.cpCode, d.cpName);
+    });
+
+    step2Container.style.display = "none";
+    document.getElementById("cpTypeFilterContainer").style.display = "none";
+    renderStep2Table();
+    checkAndApplyProjectTypeLock();
+    render();
+    savePersistentState();
+    alert("All configured Step 2 rows have been successfully transferred to the Contract Award Register below! The Project Name, Project Type, Register, and History Log are now saved in this browser.");
+}
+
+function toggleSubDropdown(code, type){
+    const targetId = `dropdown-${code}-${type}`;
+    const dd = document.getElementById(targetId);
+    if(!dd) return;
+
+    const row = document.getElementById(`row-${code}`);
+    if(row && row.classList.contains('disabled-row') && !row.classList.contains('active-row')) return;
+
+    document.querySelectorAll('.multi-select-dropdown').forEach(d => {
+        if(d !== dd && d.classList.contains('open')) {
+            d.classList.remove('open');
+            const wrapper = d.closest('.multi-select-wrapper');
+            if(wrapper) updateToggleLabel(wrapper.getAttribute('data-code'), wrapper.getAttribute('data-type'));
+        }
+    });
+    dd.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+    document.querySelectorAll('.multi-select-wrapper').forEach(wrapper => {
+        const toggle = wrapper.querySelector('.multi-select-toggle');
+        const dropdown = wrapper.querySelector('.multi-select-dropdown');
+        if(toggle && dropdown && !toggle.contains(e.target) && !dropdown.contains(e.target)) {
+            if(dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+                updateToggleLabel(wrapper.getAttribute('data-code'), wrapper.getAttribute('data-type'));
+            }
+        }
+    });
+});
+
+function updateToggleLabel(code, type) {
+    const toggle = document.getElementById(`toggle-${code}-${type}`);
+    if(!toggle) return;
+    if(type === 'sub') {
+        const count = document.querySelectorAll(`.sub-chk-${domToken(code)}-sub:checked`).length;
+        toggle.textContent = count ? `${count} Sub-package(s) selected` : 'Select Sub-package(s)';
+    } else if(type === 'added') {
+        const count = document.querySelectorAll(`.added-cp-chk-${domToken(code)}:checked`).length;
+        toggle.textContent = count ? `${count} CP(s) Added` : 'Select Added CP(s)';
+    } else if(type === 'addedsub') {
+        const count = document.querySelectorAll(`.sub-chk-${domToken(code)}-addedsub:checked`).length;
+        toggle.textContent = count ? `${count} Sub-package(s) added` : 'Select Sub-package(s)';
+    }
+}
+
+function toggleAllSubs(code, type, checked) {
+    const chks = document.querySelectorAll(`.sub-chk-${domToken(code)}-${type}:not(:disabled)`);
+    chks.forEach(chk => { chk.checked = checked; });
+    updateToggleLabel(code, type);
+}
+
+function toggleAllAddedCPs(code, checked) {
+    const chks = document.querySelectorAll(`.added-cp-chk-${domToken(code)}:not(:disabled)`);
+    chks.forEach(chk => { chk.checked = checked; });
+    updateToggleLabel(code, 'added');
+    refreshAddedSubDropdownOptions(code);
+}
+
+function toggleAllAddedSubs(code, checked) {
+    const chks = document.querySelectorAll(`.sub-chk-${domToken(code)}-addedsub:not(:disabled)`);
+    chks.forEach(chk => { chk.checked = checked; });
+    updateToggleLabel(code, 'addedsub');
+}
+
+function addedCPChanged(instanceId) {
+    updateToggleLabel(instanceId, 'added');
+    refreshAddedSubDropdownOptions(instanceId);
+}
+
+function refreshAddedSubDropdownOptions(instanceId) {
+    const domInst = domToken(instanceId);
+    const selectedAddedCPCodes = Array.from(document.querySelectorAll(`.added-cp-chk-${domInst}:checked`)).map(c => c.value);
+    const addedSubDropdown = document.getElementById(`dropdown-${instanceId}-addedsub`);
+    if(!addedSubDropdown) return;
+
+    if(selectedAddedCPCodes.length === 0){
+        addedSubDropdown.innerHTML = `<div style="padding:6px; color:var(--muted); font-size:11px;">Select added package first</div>`;
+        const toggle = document.getElementById(`toggle-${instanceId}-addedsub`);
+        if(toggle) toggle.textContent = 'Select Sub-package(s)';
+        return;
+    }
+
+    const consumedAddedSubs = getConsumedAddedSubpackagesAcrossProject(instanceId);
+    let html = `<label class="multi-select-option" style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:4px;"><input type="checkbox" onchange="toggleAllAddedSubs('${instanceId}', this.checked)"> Select All</label>`;
+    let hasSubs = false;
+
+    selectedAddedCPCodes.forEach(addedCode => {
+        const addedCpObj = CONTRACT_PACKAGE_MASTER.find(x => x.code === addedCode);
+        if(addedCpObj && addedCpObj.subpackages.length > 0){
+            hasSubs = true;
+            html += `<div style="font-weight:bold; font-size:10px; color:var(--navy); padding:3px 6px; background:#f0f4f8;">${esc(addedCpObj.name)}</div>`;
+            addedCpObj.subpackages.forEach(sub => {
+                const isAddedSubUsed = consumedAddedSubs.includes(sub.id);
+                html += `
+                    <label class="multi-select-option ${isAddedSubUsed ? 'disabled-option' : ''}">
+                        <input type="checkbox" class="sub-chk-${domInst}-addedsub" data-instance="${esc(instanceId)}" value="${esc(sub.id)}" ${isAddedSubUsed ? 'disabled' : ''} onchange="updateToggleLabel('${instanceId}', 'addedsub')">
+                        <span>${esc(sub.name)} (${esc(sub.code)}) ${isAddedSubUsed ? '[Added]' : ''}</span>
+                    </label>`;
+            });
+        }
+    });
+
+    if(!hasSubs){
+        html = `<div style="padding:6px; color:var(--muted); font-size:11px;">None</div>`;
+    }
+    addedSubDropdown.innerHTML = html;
+    updateToggleLabel(instanceId, 'addedsub');
+}
+
+function render() {
+    const projectRecords = cps.filter(x => !selectedProjectValue || x.project === selectedProjectValue);
+    document.getElementById("totalPackageCount").textContent = projectRecords.length;
+
+    if (!projectRecords.length) {
+        body.innerHTML = `<tr><td colspan="9" class="empty">No contract awards created yet for this project. Please complete Step 1 & Step 2 above.</td></tr>`;
+        return;
+    }
+
+    let rowsHtml = "";
+    projectRecords.forEach((record, index) => {
+        const fullCode = getFullCPCode(record, index);
+        const description = getContractAwardDescription(record);
+
+        let subPackagesListHtml = "";
+        const mainSubs = record.subpackages || [];
+        if (mainSubs.length > 0) {
+            mainSubs.forEach(subId => {
+                const cpObj = CONTRACT_PACKAGE_MASTER.find(c => c.code === record.cpCode);
+                const subObj = cpObj ? (cpObj.subpackages || []).find(s => s.id === subId) : null;
+                const subName = subObj ? subObj.name : subId;
+                const subCode = subObj ? subObj.code : "";
+                subPackagesListHtml += `
+                    <div class="sub-item">
+                        <div class="sub-dot"></div>
+                        <div>
+                            <div>${esc(subName)}</div>
+                            ${subCode ? `<div class="code">${esc(subCode)}</div>` : ''}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        const addedCPCodes = record.addedCPs || [];
+        const addedSubCodes = record.addedSubpackages || [];
+        
+        addedCPCodes.forEach(addedCode => {
+            const addedCpObj = CONTRACT_PACKAGE_MASTER.find(c => c.code === addedCode);
+            const addedCpName = addedCpObj ? addedCpObj.name : addedCode;
+            
+            subPackagesListHtml += `
+                <div class="sub-item" style="margin-top:4px;">
+                    <div class="sub-dot" style="background:var(--navy);"></div>
+                    <div>
+                        <div style="font-weight:700; color:var(--navy);">+ ${esc(addedCpName)}</div>
+                        <div class="code">${esc(addedCode)}</div>
+                    </div>
+                </div>`;
+
+            if (addedCpObj && addedCpObj.subpackages && addedCpObj.subpackages.length > 0) {
+                addedCpObj.subpackages.forEach(sub => {
+                    if (addedSubCodes.includes(sub.id)) {
+                        subPackagesListHtml += `
+                            <div class="sub-item" style="padding-left:12px;">
+                                <div class="sub-dot"></div>
+                                <div>
+                                    <div>${esc(sub.name)}</div>
+                                    ${sub.code ? `<div class="code">${esc(sub.code)}</div>` : ''}
+                                </div>
+                            </div>`;
+                    }
+                });
+            }
+        });
+
+        if (!subPackagesListHtml) {
+            subPackagesListHtml = `<span style="color:var(--muted);">None</span>`;
+        }
+
+        let allCPContentHtml = `
+            <div class="cp">${esc(record.cpName)}</div>
+            <div class="code">${esc(record.cpCode || "No Budget Code")}</div>`;
+
+        addedCPCodes.forEach(addedCode => {
+            const match = CONTRACT_PACKAGE_MASTER.find(c => c.code === addedCode);
+            allCPContentHtml += `
+                <div style="margin-top:6px; border-top:1px dashed var(--border); pt:4px;">
+                    <div class="cp" style="color:var(--blue);">+ ${esc(match ? match.name : addedCode)}</div>
+                    <div class="code">${esc(addedCode)}</div>
+                </div>`;
+        });
+
+        rowsHtml += `
+            <tr>
+                <td><code style="font-weight:bold; color:var(--navy);">${esc(fullCode)}</code></td>
+                <td><strong>${esc(description)}</strong></td>
+                <td>${esc(record.cpType)}</td>
+                <td>${allCPContentHtml}</td>
+                <td><div class="list">${subPackagesListHtml}</div></td>
+                <td>${esc(record.estimate || "—")}</td>
+                <td>${esc(formatDateDDMMMYY(record.dateNeeded))}</td>
+                <td>${esc(record.remarks || "—")}</td>
+                <td class="no-print" style="text-align:center;">
+                    <button class="edit-btn" onclick="editRegisterRow('${esc(record.instanceId || '')}')">✏️ Edit</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    body.innerHTML = rowsHtml;
+}
+
+function editRegisterRow(instanceId) {
+    if(!instanceId) {
+        alert("Cannot locate this record instance.");
+        return;
+    }
+    const record = cps.find(x => x.instanceId === instanceId);
+    if(!record) {
+        alert("Record not found in register.");
+        return;
+    }
+
+    const savedType = record.projectType || getSavedProjectType(record.project);
+    selectedProjectValue = record.project;
+    selectedProjectTypeValue = savedType;
+
+    const projObj = PROJECT_MASTER.find(p => p.projectName === record.project);
+    document.getElementById("projectInput").value = projObj ? projObj.projectName : record.project;
+    const typeObj = PROJECT_TYPE_MASTER.find(t => t.typeCode === savedType);
+    document.getElementById("typeInput").value = typeObj ? typeObj.typeName : savedType;
+
+    projectInfo.innerHTML = projObj ? `<span class="project-tag">${esc(projObj.projectCode)}</span>` : "";
+    document.getElementById("manageBtn").style.display = "inline-block";
+
+    if(!step2Draft.some(x => x.instanceId === instanceId && x.project === record.project)) {
+        step2Draft.push(JSON.parse(JSON.stringify(record)));
+    }
+
+    document.getElementById("cpTypeFilterContainer").style.display = "block";
+    setupCPTypeFilterDropdown();
+    step2Container.style.display = "block";
+    renderStep2Table();
+
+    switchTab('register');
+    window.scrollTo({ top: step2Container.offsetTop - 20, behavior: 'smooth' });
+}
+
+function openPDFPreview() {
+    const projectRecords = cps.filter(x => !selectedProjectValue || x.project === selectedProjectValue);
+    if (!projectRecords.length) {
+        alert("No contract award records available to generate PDF preview.");
+        return;
+    }
+
+    const projObj = PROJECT_MASTER.find(x => x.projectName === selectedProjectValue);
+    const projCode = projObj ? projObj.projectCode : "ALL";
+    const projName = selectedProjectValue || "All Projects";
+    const projType = selectedProjectTypeValue ? (PROJECT_TYPE_MASTER.find(t => t.typeCode === selectedProjectTypeValue)?.typeName || selectedProjectTypeValue) : "All Types";
+
+    document.getElementById("pdfMeta").innerHTML = `
+        <b>Project Name:</b> ${esc(projName)} (${esc(projCode)}) &nbsp;|&nbsp; 
+        <b>Project Type:</b> ${esc(projType)} &nbsp;|&nbsp; 
+        <b>Date Generated:</b> ${esc(new Date().toLocaleDateString())}
+    `;
+
+    let pdfRowsHtml = "";
+    projectRecords.forEach((record, index) => {
+        const fullCode = getFullCPCode(record, index);
+        const description = getContractAwardDescription(record);
+
+        let subPackagesListHtml = "";
+        const mainSubs = record.subpackages || [];
+        if (mainSubs.length > 0) {
+            mainSubs.forEach(subId => {
+                const cpObj = CONTRACT_PACKAGE_MASTER.find(c => c.code === record.cpCode);
+                const subObj = cpObj ? (cpObj.subpackages || []).find(s => s.id === subId) : null;
+                const subName = subObj ? subObj.name : subId;
+                const subCode = subObj ? subObj.code : "";
+                subPackagesListHtml += `
+                    <div class="sub-item">
+                        <div class="sub-dot"></div>
+                        <div>
+                            <div>${esc(subName)}</div>
+                            ${subCode ? `<div class="code">${esc(subCode)}</div>` : ''}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        const addedCPCodes = record.addedCPs || [];
+        const addedSubCodes = record.addedSubpackages || [];
+        
+        addedCPCodes.forEach(addedCode => {
+            const addedCpObj = CONTRACT_PACKAGE_MASTER.find(c => c.code === addedCode);
+            const addedCpName = addedCpObj ? addedCpObj.name : addedCode;
+            
+            subPackagesListHtml += `
+                <div class="sub-item" style="margin-top:3px;">
+                    <div class="sub-dot" style="background:var(--navy);"></div>
+                    <div>
+                        <div style="font-weight:700; color:var(--navy);">+ ${esc(addedCpName)}</div>
+                        <div class="code">${esc(addedCode)}</div>
+                    </div>
+                </div>`;
+
+            if (addedCpObj && addedCpObj.subpackages && addedCpObj.subpackages.length > 0) {
+                addedCpObj.subpackages.forEach(sub => {
+                    if (addedSubCodes.includes(sub.id)) {
+                        subPackagesListHtml += `
+                            <div class="sub-item" style="padding-left:10px;">
+                                <div class="sub-dot"></div>
+                                <div>
+                                    <div>${esc(sub.name)}</div>
+                                    ${sub.code ? `<div class="code">${esc(sub.code)}</div>` : ''}
+                                </div>
+                            </div>`;
+                    }
+                });
+            }
+        });
+
+        if (!subPackagesListHtml) {
+            subPackagesListHtml = `<span style="color:#666;">None</span>`;
+        }
+
+        let allCPContentHtml = `
+            <div style="font-weight:800; color:var(--navy);">${esc(record.cpName)}</div>
+            <div class="code">${esc(record.cpCode || "No Budget Code")}</div>`;
+
+        addedCPCodes.forEach(addedCode => {
+            const match = CONTRACT_PACKAGE_MASTER.find(c => c.code === addedCode);
+            allCPContentHtml += `
+                <div style="margin-top:4px; border-top:1px dashed #ccc; pt:2px;">
+                    <div style="font-weight:800; color:var(--blue);">+ ${esc(match ? match.name : addedCode)}</div>
+                    <div class="code">${esc(addedCode)}</div>
+                </div>`;
+        });
+
+        pdfRowsHtml += `
+            <tr>
+                <td><code style="font-weight:bold; color:var(--navy);">${esc(fullCode)}</code></td>
+                <td><strong>${esc(description)}</strong></td>
+                <td>${esc(record.cpType)}</td>
+                <td>${allCPContentHtml}</td>
+                <td><div class="list">${subPackagesListHtml}</div></td>
+                <td>${esc(record.estimate || "—")}</td>
+                <td>${esc(formatDateDDMMMYY(record.dateNeeded))}</td>
+                <td>${esc(record.remarks || "—")}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("pdfBody").innerHTML = pdfRowsHtml;
+    document.getElementById("pdfModal").classList.add("show");
+}
+
+function closePDFPreview() {
+    document.getElementById("pdfModal").classList.remove("show");
+}
+
+function clearProject() {
+    if(confirm("Are you sure you want to reset current project selections?")) {
+        selectedProjectValue = "";
+        selectedProjectTypeValue = "";
+        selectedCPTypeFilter = "";
+        document.getElementById("projectInput").value = "";
+        document.getElementById("typeInput").value = "";
+        document.getElementById("cpTypeFilterInput").value = "";
+        projectInfo.innerHTML = "";
+        step2Container.style.display = "none";
+        document.getElementById("cpTypeFilterContainer").style.display = "none";
+        document.getElementById("manageBtn").style.display = "none";
+        updateAvailableCounts();
+        checkAndApplyProjectTypeLock();
+        render();
+    }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    const longDescriptionField = document.getElementById("newContractAwardDescription");
+    if(longDescriptionField) longDescriptionField.addEventListener("input", updateLongDescriptionCounter);
+
+    loadPersistentState();
+
+    try {
+        await loadSmartsheetMasterData();
+        setupDropdowns();
+        render();
+    } catch(err) {
+        document.getElementById("projectInput").disabled = true;
+        document.getElementById("typeInput").disabled = true;
+        document.getElementById("manageBtn").style.display = "none";
+        body.innerHTML = `<tr><td colspan="9" class="empty">Smartsheet master data could not be loaded. Check the Vercel API function, SMARTSHEET_ACCESS_TOKEN environment variable, sheet access, and sheet column names.</td></tr>`;
+    }
+});
+</script>
+</body>
+</html>

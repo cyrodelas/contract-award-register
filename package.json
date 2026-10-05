@@ -1,0 +1,10 @@
+{
+  "name": "contract-award-register-smartsheet",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Contract Award Register powered by Smartsheet master data and deployable to Vercel.",
+  "engines": {
+    "node": ">=20"
+  }
+}
